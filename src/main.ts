@@ -73,6 +73,7 @@ async function startXR(mode: 'immersive-ar' | 'immersive-vr') {
   await renderer.xr.setSession(session)
 
   setup.style.display = 'none'
+  xrOverlay.style.display = 'flex'
   statusBar.textContent = '⏸ Caminá para comenzar'
   tracker.reset()
 
@@ -121,6 +122,7 @@ async function startXR(mode: 'immersive-ar' | 'immersive-vr') {
 
   session.addEventListener('end', () => {
     renderer.setAnimationLoop(null)
+    xrOverlay.style.display = 'none'
     setup.style.display = 'flex'
     resetBtn()
   })
