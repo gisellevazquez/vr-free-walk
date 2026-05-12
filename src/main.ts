@@ -54,8 +54,10 @@ startBtn.addEventListener('click', async () => {
 
   try {
     await startXR(arOk ? 'immersive-ar' : 'immersive-vr')
-  } catch {
-    showError('No se pudo iniciar la sesión XR.')
+  } catch (err) {
+    xrOverlay.style.display = 'none'
+    const msg = err instanceof Error ? err.message : String(err)
+    showError(`Error XR: ${msg}`)
     resetBtn()
   }
 })
@@ -67,6 +69,8 @@ async function startXR(mode: 'immersive-ar' | 'immersive-vr') {
   if (mode === 'immersive-ar') {
     init.requiredFeatures = ['dom-overlay']
     init.domOverlay = { root: xrOverlay }
+    // dom-overlay spec requires the root to be visible before requestSession
+    xrOverlay.style.display = 'flex'
   }
 
   const session = await navigator.xr!.requestSession(mode, init as XRSessionInit)
