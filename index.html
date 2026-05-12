@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>VR Free Walk</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: #0a0a0a;
+      color: #fff;
+      font-family: system-ui, sans-serif;
+      height: 100dvh;
+      overflow: hidden;
+    }
+
+    canvas {
+      position: fixed;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+    }
+
+    /* ── Setup UI ── */
+    #setup {
+      position: fixed;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 20px;
+      padding: 24px;
+      background: rgba(0, 0, 0, 0.88);
+    }
+
+    #setup h1 {
+      font-size: clamp(26px, 6vw, 44px);
+      font-weight: 700;
+      letter-spacing: -0.5px;
+    }
+
+    #setup p {
+      color: #999;
+      text-align: center;
+      max-width: 360px;
+      font-size: 15px;
+      line-height: 1.6;
+    }
+
+    #url-input {
+      width: 100%;
+      max-width: 480px;
+      padding: 14px 18px;
+      font-size: 16px;
+      border-radius: 10px;
+      border: 1.5px solid #333;
+      background: #1a1a1a;
+      color: #fff;
+      outline: none;
+      transition: border-color 0.15s;
+    }
+
+    #url-input:focus { border-color: #3b82f6; }
+
+    #start-btn {
+      padding: 14px 38px;
+      font-size: 17px;
+      font-weight: 600;
+      border-radius: 10px;
+      border: none;
+      background: #2563eb;
+      color: #fff;
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+
+    #start-btn:hover:not(:disabled) { background: #1d4ed8; }
+    #start-btn:disabled { background: #444; cursor: default; }
+
+    #error-msg {
+      color: #f87171;
+      font-size: 14px;
+      display: none;
+    }
+
+    /* ── XR Overlay (DOM overlay in passthrough AR) ── */
+    #xr-overlay {
+      position: fixed;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      pointer-events: none;
+    }
+
+    /* The floating video panel — 88vw makes it feel like a large screen at ~2m */
+    #video-panel {
+      width: 88vw;
+      aspect-ratio: 16 / 9;
+      border-radius: 10px;
+      overflow: hidden;
+      pointer-events: auto;
+      box-shadow: 0 0 80px rgba(0, 0, 0, 0.7);
+    }
+
+    #video-panel iframe,
+    #video-panel > div {
+      width: 100%;
+      height: 100%;
+      border: none;
+      display: block;
+    }
+
+    #status-bar {
+      position: fixed;
+      bottom: 36px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(0, 0, 0, 0.6);
+      color: #fff;
+      font-size: 15px;
+      font-weight: 500;
+      padding: 10px 24px;
+      border-radius: 24px;
+      pointer-events: none;
+      white-space: nowrap;
+      backdrop-filter: blur(8px);
+    }
+  </style>
+</head>
+<body>
+  <canvas id="canvas"></canvas>
+
+  <div id="setup">
+    <h1>VR Free Walk</h1>
+    <p>Pegá un link de YouTube, ponete el casco y caminá.<br/>El video avanza mientras te movés.</p>
+    <input id="url-input" type="url" placeholder="https://youtube.com/watch?v=..." autocomplete="off" spellcheck="false" />
+    <button id="start-btn">Entrar al VR</button>
+    <span id="error-msg"></span>
+  </div>
+
+  <div id="xr-overlay">
+    <div id="video-panel">
+      <div id="yt-player"></div>
+    </div>
+    <div id="status-bar">⏸ Caminá para comenzar</div>
+  </div>
+
+  <script type="module" src="/src/main.ts"></script>
+</body>
+</html>
